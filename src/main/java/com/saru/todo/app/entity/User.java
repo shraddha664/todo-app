@@ -2,6 +2,7 @@ package com.saru.todo.app.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Transactional
+@Builder
 public class User {
 
     @Id
@@ -23,6 +25,7 @@ public class User {
     private String userName;
     private String userEmail;
     private String password;
+    private String roles;
 
     @OneToMany(fetch = FetchType.EAGER,orphanRemoval=true,cascade = CascadeType.ALL,targetEntity = Todo.class)
     @JoinColumn(name = "FK_USER_ID",referencedColumnName = "userId")

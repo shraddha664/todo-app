@@ -6,7 +6,9 @@ import com.saru.todo.app.entity.Todo;
 import com.saru.todo.app.entity.User;
 import com.saru.todo.app.repository.TodoRepository;
 import com.saru.todo.app.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,28 +16,32 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
 
-    @Autowired
-    private TodoRepository todoRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final TodoRepository todoRepository;
 
     public void saveUser(UserDto userDto) {
-        User user = new User();
-        user.setUserName(userDto.getUserName());
-        user.setUserEmail(userDto.getUserEmail());
-        user.setPassword(userDto.getPassword());
+        User user = User.builder()
+                .userName(userDto.getUserName())
+                .password(passwordEncoder.encode(userDto.getPassword()))
+                .userEmail(userDto.getUserEmail())
+                .roles(userDto.getRoles())
+                .build();
+
         userRepository.save(user);
     }
 
     public void saveTodo(Long id, TodoDto todoDto) {
         User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException());
-
-        Todo todo = new Todo();
-        todo.setTaskName(todoDto.getTaskName());
-        todo.setDescription(todoDto.getDescription());
+        Todo todo=Todo.builder()
+                .taskName(todoDto.getTaskName())
+                .description(todoDto.getDescription())
+                .isCompleted(Boolean.FALSE)
+                .build();
 
         user.getTodos().add(todo);
 
@@ -132,7 +138,7 @@ public class UserService {
             Todo todo1=todo.get();
             todo1.setIsCompleted(!todo1.getIsCompleted());
             todoRepository.save(todo1);
-            message="Todo updates succesfully";
+            message="Todo updated succesfully";
         }
         return message;
     }
