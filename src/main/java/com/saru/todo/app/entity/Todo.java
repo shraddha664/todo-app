@@ -3,6 +3,7 @@ package com.saru.todo.app.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Transactional
+@Builder
 public class Todo {
 
     @Id
@@ -25,7 +27,6 @@ public class Todo {
 
     private String taskName;
     private String description;
-
 
     private Boolean isCompleted=Boolean.FALSE;
 
